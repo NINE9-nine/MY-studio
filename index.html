@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 视觉引擎 | 独立 MV & 电商大片制作</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0a; color: #ffffff; }
+        .text-gradient {
+            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+        }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); }
+        .modal-content { margin: auto; display: block; width: 80%; max-width: 900px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .close-btn { position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; cursor: pointer; z-index: 101; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 glass-card px-6 py-4 flex justify-between items-center">
+        <!-- 【这里修改你的工作室名字】 -->
+        <div class="text-xl font-bold tracking-wider">MY<span class="text-pink-500">.</span>STUDIO</div>
+        <a href="#contact" class="bg-white text-black px-5 py-2 rounded-full text-sm font-bold">开启合作</a>
+    </nav>
+
+    <!-- 首屏介绍 -->
+    <section class="pt-40 pb-20 px-6 flex flex-col items-center text-center">
+        <h1 class="text-5xl font-extrabold mb-6">
+            超越实拍的视觉奇观，<br />
+            <span class="text-gradient">预算只需传统制作的五分之一。</span>
+        </h1>
+        <p class="text-gray-400 text-xl max-w-2xl mb-10">我们利用前沿 AI 技术，为独立音乐人打造 MV，为电商品牌创造超现实大片。</p>
+    </section>
+
+    <!-- 作品展示 -->
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold mb-12 text-center">近期成功案例</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+            
+            <!-- 案例 1：电商广告 -->
+            <div class="relative rounded-xl overflow-hidden aspect-video bg-gray-800 cursor-pointer" onclick="openModal('my_ad.mp4')">
+                <div class="absolute inset-0 flex items-center justify-center opacity-50 hover:opacity-100 transition">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">▶</div>
+                </div>
+                <div class="absolute bottom-4 left-4">
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded">电商广告</span>
+                    <!-- 【这里修改你的视频标题】 -->
+                    <h4 class="font-bold text-lg">“极地深寒”香水大片</h4>
+                </div>
+            </div>
+
+            <!-- 案例 2：音乐 MV -->
+            <div class="relative rounded-xl overflow-hidden aspect-video bg-gray-800 cursor-pointer" onclick="openModal('my_mv.mp4')">
+                <div class="absolute inset-0 flex items-center justify-center opacity-50 hover:opacity-100 transition">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">▶</div>
+                </div>
+                <div class="absolute bottom-4 left-4">
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded">音乐 MV</span>
+                    <!-- 【这里修改你的视频标题】 -->
+                    <h4 class="font-bold text-lg">迷幻电子单曲 MV</h4>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="py-24 text-center">
+        <h2 class="text-3xl font-bold mb-6">准备好升级视觉体验了吗？</h2>
+        <!-- 【这里修改你的邮箱和微信号】 -->
+        <a href="mailto:your_email@gmail.com" class="bg-white text-black px-10 py-4 rounded-full font-bold inline-block mb-4">发送邮件咨询</a>
+        <p class="text-gray-500">或添加微信: YourWechatID</p>
+    </section>
+
+    <!-- 视频弹窗 (不要动这里) -->
+    <div id="videoModal" class="modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <video id="modalVideo" class="modal-content" controls>
+            <source src="" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- 交互脚本 (不要动这里) -->
+    <script>
+        const modal = document.getElementById("videoModal");
+        const video = document.getElementById("modalVideo");
+        function openModal(src) { video.src = src; modal.style.display = "block"; video.play(); }
+        function closeModal() { modal.style.display = "none"; video.pause(); video.src = ""; }
+    </script>
+</body>
+</html>
