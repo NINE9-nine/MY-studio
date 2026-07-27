@@ -3,92 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 视觉引擎 | 独立 MV & 电商大片制作</title>
+    <title>NINE STUDIO - 超现实数字视觉</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #0a0a0a; color: #ffffff; }
-        .text-gradient {
-            background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+        :root {
+            --bg-light: #fafafa; 
+            --text-main: #111111;  
         }
-        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); }
-        .modal-content { margin: auto; display: block; width: 80%; max-width: 900px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .close-btn { position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; cursor: pointer; z-index: 101; }
+        body { 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            font-family: 'Noto Sans SC', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .font-tech-en { 
+            font-family: 'Space Grotesk', sans-serif; 
+            letter-spacing: 0.05em;
+        }
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+        }
+        .gradient-text-fluid {
+            background: linear-gradient(90deg, #9ca3af 0%, #d1d5db 50%, #9ca3af 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShine 4s linear infinite;
+        }
+        @keyframes gradientShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        .work-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+        }
+        .work-card:hover {
+            border-color: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+            transform: translateY(-5px);
+        }
+        .nav-link { position: relative; transition: color 0.3s ease; }
+        .section-heading {
+            border-left: 3px solid var(--text-main);
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: baseline;
+        }
     </style>
 </head>
-<body class="antialiased">
-
+<body>
+    <div class="noise-overlay"></div>
+    
     <!-- 导航栏 -->
-    <nav class="fixed w-full z-50 glass-card px-6 py-4 flex justify-between items-center">
-        <!-- 【这里修改你的工作室名字】 -->
-        <div class="text-xl font-bold tracking-wider">MY<span class="text-pink-500">.</span>STUDIO</div>
-        <a href="#contact" class="bg-white text-black px-5 py-2 rounded-full text-sm font-bold">开启合作</a>
+    <nav class="flex justify-between items-end py-10 px-8 max-w-[1400px] mx-auto relative z-10">
+        <div class="flex flex-col">
+            <h1 class="text-3xl font-black font-tech-en text-gray-900 tracking-wider">
+                NINE<span class="text-gray-400 ml-1">STUDIO</span>
+            </h1>
+            <span class="text-[0.65rem] font-bold tracking-[0.2em] text-gray-500 mt-1 uppercase font-tech-en">
+                Surreal Digital Vision · 超现实视觉
+            </span>
+        </div>
     </nav>
 
-    <!-- 首屏介绍 -->
-    <section class="pt-40 pb-20 px-6 flex flex-col items-center text-center">
-        <h1 class="text-5xl font-extrabold mb-6">
-            超越实拍的视觉奇观，<br />
-            <span class="text-gradient">预算只需传统制作的五分之一。</span>
-        </h1>
-        <p class="text-gray-400 text-xl max-w-2xl mb-10">我们利用前沿 AI 技术，为独立音乐人打造 MV，为电商品牌创造超现实大片。</p>
-    </section>
+    <!-- 核心视觉文案区 -->
+    <header class="max-w-[1400px] mx-auto px-8 pt-16 pb-24 text-left relative z-10">
+        <h2 class="text-4xl md:text-5xl lg:text-[4.5rem] font-black text-gray-900 tracking-tight leading-[1.2] mb-4">
+            降维打击传统实拍。<br class="md:hidden">
+            <span class="gradient-text-fluid inline-block mt-3 text-4xl sm:text-5xl md:text-6xl lg:text-[5rem]">
+                用 20% 的预算，生成 100% 的超现实视觉暴击。
+            </span>
+        </h2>
+        <p class="text-sm md:text-base text-gray-500 max-w-2xl leading-relaxed tracking-wide font-light mt-6">
+            NINE STUDIO 接入全景 AI 算力，让每一个狂热灵感精准显影。
+        </p>
+    </header>
 
-    <!-- 作品展示 -->
-    <section class="py-20 px-6 max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold mb-12 text-center">近期成功案例</h2>
-        <div class="grid md:grid-cols-2 gap-6">
+    <main class="max-w-[1400px] mx-auto px-8 pb-32 relative z-10 space-y-32">
+        <!-- 作品展示区 -->
+        <section id="works">
+            <div class="section-heading">
+                <div class="flex flex-col">
+                    <h2 class="text-xl md:text-2xl font-bold tracking-widest text-gray-900">精选大片</h2>
+                    <span class="text-[0.65rem] text-gray-400 uppercase tracking-[0.2em] font-tech-en mt-1">Featured Works</span>
+                </div>
+            </div>
             
-            <!-- 案例 1：电商广告 -->
-            <div class="relative rounded-xl overflow-hidden aspect-video bg-gray-800 cursor-pointer" onclick="openModal('my_ad.mp4')">
-                <div class="absolute inset-0 flex items-center justify-center opacity-50 hover:opacity-100 transition">
-                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">▶</div>
-                </div>
-                <div class="absolute bottom-4 left-4">
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded">电商广告</span>
-                    <!-- 【这里修改你的视频标题】 -->
-                    <h4 class="font-bold text-lg">“极地深寒”香水大片</h4>
-                </div>
+            <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+                <p class="text-gray-400 text-sm">正在接入系统数据...</p>
             </div>
+        </section>
+    </main>
 
-            <!-- 案例 2：音乐 MV -->
-            <div class="relative rounded-xl overflow-hidden aspect-video bg-gray-800 cursor-pointer" onclick="openModal('my_mv.mp4')">
-                <div class="absolute inset-0 flex items-center justify-center opacity-50 hover:opacity-100 transition">
-                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">▶</div>
-                </div>
-                <div class="absolute bottom-4 left-4">
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded">音乐 MV</span>
-                    <!-- 【这里修改你的视频标题】 -->
-                    <h4 class="font-bold text-lg">迷幻电子单曲 MV</h4>
-                </div>
-            </div>
+    <!-- 页脚 -->
+    <footer id="contact" class="border-t border-black/5 py-16 text-center text-xs text-gray-400 relative z-10 font-tech-en">
+        <a href="mailto:hello@nine9-design.com" class="inline-block border border-black/10 text-gray-900 px-10 py-4 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 font-bold tracking-widest uppercase mb-10">
+            Access Terminal (联系我们)
+        </a>
+        <p class="tracking-widest">&copy; 2026 NINE STUDIO. ALL SYSTEMS SECURE.</p>
+    </footer>
 
-        </div>
-    </section>
-
-    <!-- 联系方式 -->
-    <section id="contact" class="py-24 text-center">
-        <h2 class="text-3xl font-bold mb-6">准备好升级视觉体验了吗？</h2>
-        <!-- 【这里修改你的邮箱和微信号】 -->
-        <a href="mailto:your_email@gmail.com" class="bg-white text-black px-10 py-4 rounded-full font-bold inline-block mb-4">发送邮件咨询</a>
-        <p class="text-gray-500">或添加微信: YourWechatID</p>
-    </section>
-
-    <!-- 视频弹窗 (不要动这里) -->
-    <div id="videoModal" class="modal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <video id="modalVideo" class="modal-content" controls>
-            <source src="" type="video/mp4">
-        </video>
-    </div>
-
-    <!-- 交互脚本 (不要动这里) -->
+    <!-- CMS 数据读取与渲染脚本 -->
     <script>
-        const modal = document.getElementById("videoModal");
-        const video = document.getElementById("modalVideo");
-        function openModal(src) { video.src = src; modal.style.display = "block"; video.play(); }
-        function closeModal() { modal.style.display = "none"; video.pause(); video.src = ""; }
+        async function loadWorks() {
+            try {
+                const response = await fetch('works.json');
+                const data = await response.json();
+                const grid = document.getElementById('works-grid');
+                grid.innerHTML = '';
+
+                data.items.forEach(item => {
+                    let mediaContent = '';
+                    // 核心逻辑：如果有视频链接，就播放视频；否则显示封面图
+                    if (item.video && item.video.trim() !== "") {
+                        mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"></video>`;
+                    } else if (item.cover && item.cover.trim() !== "") {
+                        mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100">`;
+                    }
+
+                    const card = `
+                    <div class="work-card aspect-square group cursor-pointer">
+                        ${mediaContent}
+                        <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="relative z-10 mt-auto">
+                            <h3 class="card-title text-lg md:text-xl font-bold text-gray-900 transition-colors">${item.title}</h3>
+                            <p class="card-desc font-tech-en text-[0.65rem] text-gray-600 uppercase tracking-widest mt-1">${item.category}</p>
+                        </div>
+                    </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+            } catch (error) {
+                console.log('请在发布到线上后查看真实数据。', error);
+                document.getElementById('works-grid').innerHTML = '<p class="text-gray-400 text-sm">本地预览受限，请发布到线上后查看真实数据。</p>';
+            }
+        }
+        loadWorks();
     </script>
 </body>
 </html>

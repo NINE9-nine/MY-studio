@@ -1,0 +1,34 @@
+backend:
+name: git-gateway
+branch: main
+
+media_folder: "images/uploads"
+public_folder: "images/uploads"
+
+collections:
+
+name: "works"
+label: "作品集管理"
+folder: "/"
+create: false
+extension: "json"
+format: "json"
+fields:
+
+label: "作品数据"
+name: "works"
+file: "works.json"
+fields:
+
+label: "所有的作品卡片"
+name: "items"
+widget: "list"
+fields:
+
+{label: "作品标题", name: "title", widget: "string"}
+
+{label: "分类标签 (建议英文)", name: "category", widget: "string"}
+
+{label: "封面图片", name: "cover", widget: "image", required: false}
+
+{label: "高清视频直链 (请填入阿里云OSS等视频链接)", name: "video", widget: "string", required: false}
