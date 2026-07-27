@@ -57,6 +57,8 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 1.5rem;
+            /* 16:9 比例 */
+            aspect-ratio: 16 / 9;
         }
         .work-card:hover {
             border-color: rgba(0, 0, 0, 0.1);
@@ -64,7 +66,34 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
             transform: translateY(-5px);
         }
-        .nav-link { position: relative; transition: color 0.3s ease; }
+        
+        /* 隐藏元素的类 */
+        .hidden-card {
+            display: none !important;
+        }
+        
+        /* 过滤器按钮样式 */
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #666;
+            font-weight: 500;
+        }
+        .filter-btn:hover {
+            border-color: #111;
+            color: #111;
+        }
+        .filter-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
         .section-heading {
             border-left: 3px solid var(--text-main);
             padding-left: 1rem;
@@ -102,13 +131,25 @@
         </p>
     </header>
 
-    <main class="max-w-[1400px] mx-auto px-8 pb-32 relative z-10 space-y-32">
-        <!-- 作品展示区 -->
+    <main class="max-w-[1400px] mx-auto px-8 pb-32 relative z-10 space-y-16">
+        
+        <!-- 作品展示区标题与筛选器 -->
         <section id="works">
-            <div class="section-heading">
-                <div class="flex flex-col">
-                    <h2 class="text-xl md:text-2xl font-bold tracking-widest text-gray-900">精选大片</h2>
-                    <span class="text-[0.65rem] text-gray-400 uppercase tracking-[0.2em] font-tech-en mt-1">Featured Works</span>
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+                <div class="section-heading mb-0">
+                    <div class="flex flex-col">
+                        <h2 class="text-xl md:text-2xl font-bold tracking-widest text-gray-900">精选大片</h2>
+                        <span class="text-[0.65rem] text-gray-400 uppercase tracking-[0.2em] font-tech-en mt-1">Featured Works</span>
+                    </div>
+                </div>
+                
+                <!-- ！！！ 新增的分类筛选器 ！！！ -->
+                <div class="flex flex-wrap gap-3" id="filters">
+                    <button class="filter-btn active" data-filter="all">全部作品</button>
+                    <!-- 在这里修改或增加你的分类名称 -->
+                    <button class="filter-btn" data-filter="歌曲MV">歌曲MV</button>
+                    <button class="filter-btn" data-filter="电商品牌">电商品牌</button>
+                    <button class="filter-btn" data-filter="影视剧">影视剧</button>
                 </div>
             </div>
             
@@ -120,48 +161,93 @@
 
     <!-- 页脚 -->
     <footer id="contact" class="border-t border-black/5 py-16 text-center text-xs text-gray-400 relative z-10 font-tech-en">
-        <a href="mailto:hello@nine9-design.com" class="inline-block border border-black/10 text-gray-900 px-10 py-4 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 font-bold tracking-widest uppercase mb-10">
+        <!-- ！！！ 联系方式修改区 ！！！ -->
+        <!-- 把 yourname@example.com 换成你的真实邮箱 -->
+        <a href="mailto:yourname@example.com" class="inline-block border border-black/10 text-gray-900 px-10 py-4 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 font-bold tracking-widest uppercase mb-10">
             Access Terminal (联系我们)
         </a>
         <p class="tracking-widest">&copy; 2026 NINE STUDIO. ALL SYSTEMS SECURE.</p>
     </footer>
 
-    <!-- CMS 数据读取与渲染脚本 -->
+    <!-- CMS 数据读取、渲染与筛选脚本 -->
     <script>
+        let allWorksData = []; // 用来保存从 JSON 读取到的所有数据
+
         async function loadWorks() {
             try {
-                const response = await fetch('works.json');
+                // 读取 works.json 数据
+                // 注意：为了解决 GitHub Pages 的缓存问题，这里加了一个时间戳强制拉取最新数据
+                const response = await fetch('works.json?t=' + new Date().getTime());
                 const data = await response.json();
-                const grid = document.getElementById('works-grid');
-                grid.innerHTML = '';
+                allWorksData = data.items; 
+                
+                renderWorks('all'); // 初次加载时显示所有作品
+                setupFilters();     // 初始化筛选按钮的点击事件
 
-                data.items.forEach(item => {
-                    let mediaContent = '';
-                    // 核心逻辑：如果有视频链接，就播放视频；否则显示封面图
-                    if (item.video && item.video.trim() !== "") {
-                        mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"></video>`;
-                    } else if (item.cover && item.cover.trim() !== "") {
-                        mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100">`;
-                    }
-
-                    // 注意下方代码中 aspect-square 已经修改为 aspect-video (16:9比例)
-                    const card = `
-                    <div class="work-card aspect-video group cursor-pointer">
-                        ${mediaContent}
-                        <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="relative z-10 mt-auto">
-                            <h3 class="card-title text-lg md:text-xl font-bold text-gray-900 transition-colors">${item.title}</h3>
-                            <p class="card-desc font-tech-en text-[0.65rem] text-gray-600 uppercase tracking-widest mt-1">${item.category}</p>
-                        </div>
-                    </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', card);
-                });
             } catch (error) {
-                console.log('请在发布到线上后查看真实数据。', error);
-                document.getElementById('works-grid').innerHTML = '<p class="text-gray-400 text-sm">本地预览受限，请发布到线上后查看真实数据。</p>';
+                console.log('读取数据失败', error);
+                document.getElementById('works-grid').innerHTML = '<p class="text-gray-400 text-sm">数据加载失败，请检查 works.json 文件格式。</p>';
             }
         }
+
+        // 渲染卡片的函数
+        function renderWorks(filterType) {
+            const grid = document.getElementById('works-grid');
+            grid.innerHTML = ''; // 清空之前的卡片
+
+            allWorksData.forEach(item => {
+                // 筛选逻辑：如果当前选的不是"all"，且作品的 category 不包含选中的分类词，则跳过不渲染
+                // （注意：为了容错，这里使用了 .includes() 模糊匹配，忽略大小写）
+                if (filterType !== 'all') {
+                    if (!item.category.toLowerCase().includes(filterType.toLowerCase())) {
+                        return; 
+                    }
+                }
+
+                let mediaContent = '';
+                // 如果有视频链接，就播放视频；否则显示封面图
+                if (item.video && item.video.trim() !== "") {
+                    mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"></video>`;
+                } else if (item.cover && item.cover.trim() !== "") {
+                    mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100">`;
+                }
+
+                const card = `
+                <div class="work-card group cursor-pointer">
+                    ${mediaContent}
+                    <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10 mt-auto">
+                        <h3 class="card-title text-lg md:text-xl font-bold text-gray-900 transition-colors">${item.title}</h3>
+                        <p class="card-desc font-tech-en text-[0.65rem] text-gray-600 uppercase tracking-widest mt-1">${item.category}</p>
+                    </div>
+                </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+            
+            // 如果筛选后没有结果的提示
+            if(grid.innerHTML === '') {
+                 grid.innerHTML = '<p class="text-gray-400 text-sm">该分类下暂无作品。</p>';
+            }
+        }
+
+        // 设置筛选按钮点击事件的函数
+        function setupFilters() {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的 active 状态
+                    buttons.forEach(b => b.classList.remove('active'));
+                    // 给当前点击的按钮加上 active 状态
+                    this.classList.add('active');
+                    
+                    // 获取按钮上的 data-filter 属性值，并重新渲染
+                    const filterValue = this.getAttribute('data-filter');
+                    renderWorks(filterValue);
+                });
+            });
+        }
+
         loadWorks();
     </script>
 </body>
