@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NINE STUDIO - 超现实数字视觉</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AIVISION.STUDIO - 超越实拍的视觉奇观</title>
+    <!-- 引入 Tailwind CSS 和 aspect-ratio 插件 -->
+    <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-light: #fafafa; 
-            --text-main: #111111;  
+            --bg-dark: #111111;
+            --text-main: #111111;
+            --text-light: #ffffff;
+            --accent: #3b82f6; /* 可以修改强调色 */
         }
         body { 
             background-color: var(--bg-light); 
@@ -18,234 +22,299 @@
             font-family: 'Noto Sans SC', sans-serif; 
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            line-height: 1.6;
         }
         .font-tech-en { 
             font-family: 'Space Grotesk', sans-serif; 
-            letter-spacing: 0.05em;
         }
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
-        }
+        
+        /* 导航栏平滑滚动补偿 */
+        html { scroll-behavior: smooth; }
+        
+        /* 渐变文字效果 */
         .gradient-text-fluid {
-            background: linear-gradient(90deg, #9ca3af 0%, #d1d5db 50%, #9ca3af 100%);
+            background: linear-gradient(90deg, #111 0%, #666 50%, #111 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            animation: gradientShine 4s linear infinite;
+            animation: gradientShine 5s linear infinite;
         }
         @keyframes gradientShine {
             0% { background-position: 0% center; }
             100% { background-position: 200% center; }
         }
+
+        /* 按钮通用样式 */
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--text-main);
+            color: var(--text-light);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-outline:hover {
+            background-color: var(--text-main);
+            color: var(--text-light);
+        }
+
+        /* 案例卡片样式 */
         .work-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.5rem;
-            /* 16:9 比例 */
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16 / 9; /* 强制 16:9 比例 */
         }
         .work-card:hover {
-            border-color: rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             transform: translateY(-5px);
         }
-        
-        /* 隐藏元素的类 */
-        .hidden-card {
-            display: none !important;
-        }
-        
-        /* 过滤器按钮样式 */
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: transparent;
-            color: #666;
-            font-weight: 500;
-        }
-        .filter-btn:hover {
-            border-color: #111;
-            color: #111;
-        }
-        .filter-btn.active {
-            background: #111;
-            color: #fff;
-            border-color: #111;
+        .work-card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            color: white;
+            z-index: 10;
         }
 
-        .section-heading {
-            border-left: 3px solid var(--text-main);
-            padding-left: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: baseline;
+        /* 工作流编号数字 */
+        .step-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.05);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .section-padding {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
         }
     </style>
 </head>
 <body>
-    <div class="noise-overlay"></div>
-    
+
     <!-- 导航栏 -->
-    <nav class="flex justify-between items-end py-10 px-8 max-w-[1400px] mx-auto relative z-10">
-        <div class="flex flex-col">
-            <h1 class="text-3xl font-black font-tech-en text-gray-900 tracking-wider">
-                NINE<span class="text-gray-400 ml-1">STUDIO</span>
-            </h1>
-            <span class="text-[0.65rem] font-bold tracking-[0.2em] text-gray-500 mt-1 uppercase font-tech-en">
-                Surreal Digital Vision · 超现实视觉
-            </span>
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-xl font-black font-tech-en tracking-wider">AIVISION<span class="text-gray-400">.STUDIO</span></a>
+                </div>
+                <!-- 桌面端菜单 -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#services" class="text-sm font-medium text-gray-700 hover:text-black transition">核心服务</a>
+                    <a href="#works" class="text-sm font-medium text-gray-700 hover:text-black transition">过往作品</a>
+                    <a href="#workflow" class="text-sm font-medium text-gray-700 hover:text-black transition">工业流</a>
+                    <a href="#contact" class="btn-primary text-sm px-6 py-2 rounded-full">开启合作</a>
+                </div>
+                <!-- 移动端菜单按钮 (为了简单这里省略了下拉逻辑，如需移动端菜单后续可加) -->
+            </div>
         </div>
     </nav>
 
-    <!-- 核心视觉文案区 -->
-    <header class="max-w-[1400px] mx-auto px-8 pt-16 pb-24 text-left relative z-10">
-        <h2 class="text-4xl md:text-5xl lg:text-[4.5rem] font-black text-gray-900 tracking-tight leading-[1.2] mb-4">
-            降维打击传统实拍。<br class="md:hidden">
-            <span class="gradient-text-fluid inline-block mt-3 text-4xl sm:text-5xl md:text-6xl lg:text-[5rem]">
-                用 20% 的预算，生成 100% 的超现实视觉暴击。
-            </span>
-        </h2>
-        <p class="text-sm md:text-base text-gray-500 max-w-2xl leading-relaxed tracking-wide font-light mt-6">
-            NINE STUDIO 接入全景 AI 算力，让每一个狂热灵感精准显影。
-        </p>
+    <!-- 核心视觉 (Hero Section) -->
+    <header class="pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="max-w-4xl">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] mb-6">
+                超越实拍的视觉奇观，<br>
+                <span class="gradient-text-fluid">预算只需传统制作的五分之一。</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl">
+                我们利用前沿 AI 视频生成技术，为独立音乐人打造情绪饱满的 MV，为电商品牌创造将真实产品置入任何奇幻场景的超现实广告大片。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="#works" class="btn-primary rounded">观看作品集</a>
+                <a href="#contact" class="btn-outline rounded">获取免费视觉方案</a>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-[1400px] mx-auto px-8 pb-32 relative z-10 space-y-16">
+    <!-- 核心服务区 -->
+    <section id="services" class="bg-gray-50 section-padding px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">双核驱动：艺术与商业的完美融合</h2>
+                <div class="w-20 h-1 bg-black mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-20">
+                <!-- 服务 1 -->
+                <div class="bg-white p-8 lg:p-12 shadow-sm rounded-xl">
+                    <h3 class="text-2xl font-bold mb-4">独立音乐人专属 MV</h3>
+                    <p class="text-gray-600 mb-8 min-h-[48px]">
+                        无需租赁昂贵场地或聘请庞大剧组。无论是赛博朋克、末世废土还是唯美超现实，AI 都能将您的音乐情绪完美视觉化。
+                    </p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-700">
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 情绪板 (Moodboard) 定制与概念设定</li>
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 歌词意境动态推演，音轨精准卡点</li>
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 8K 分辨率，影院级色彩美学</li>
+                    </ul>
+                    <p class="text-sm font-semibold border-t pt-4">起步价：需根据项目沟通评估</p>
+                </div>
+
+                <!-- 服务 2 -->
+                <div class="bg-white p-8 lg:p-12 shadow-sm rounded-xl">
+                    <h3 class="text-2xl font-bold mb-4">超现实电商品牌大片</h3>
+                    <p class="text-gray-600 mb-8 min-h-[48px]">
+                        彻底改变传统电商拍摄。您只需提供一张产品图，我们通过技术将其完美融入任何 AI 生成的震撼场景中，光影无缝重构。
+                    </p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-700">
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 真实产品边缘抠像与 3D 深度映射</li>
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 产品与虚拟场景的真实物理光影融合</li>
+                        <li class="flex items-start"><span class="mr-2 font-bold">✓</span> 适用于美妆、香水、数码、潮牌等类目</li>
+                    </ul>
+                    <p class="text-sm font-semibold border-t pt-4">起步价：需根据项目沟通评估</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 近期成功案例 (从 JSON 动态读取) -->
+    <section id="works" class="section-padding px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">近期成功案例</h2>
+            <div class="w-20 h-1 bg-black mx-auto"></div>
+        </div>
+
+        <!-- 作品网格 -->
+        <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <p class="text-gray-500 text-center col-span-full">正在加载作品数据...</p>
+        </div>
         
-        <!-- 作品展示区标题与筛选器 -->
-        <section id="works">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
-                <div class="section-heading mb-0">
-                    <div class="flex flex-col">
-                        <h2 class="text-xl md:text-2xl font-bold tracking-widest text-gray-900">精选大片</h2>
-                        <span class="text-[0.65rem] text-gray-400 uppercase tracking-[0.2em] font-tech-en mt-1">Featured Works</span>
-                    </div>
+        <p class="text-center text-xs text-gray-400 mt-12">*由于保密协议，部分商业项目无法在此展示，如需观看更多案例请联系我们。</p>
+    </section>
+
+    <!-- 工作流 -->
+    <section id="workflow" class="bg-black text-white section-padding px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16">
+                <h2 class="text-3xl font-bold mb-4">拒绝“盲盒抽卡”，我们是真正的制片人</h2>
+                <p class="text-gray-400 max-w-2xl">
+                    客户最怕 AI 视频不可控。我们的核心竞争力在于独家研发的“混合视频工作流”，保证了成片与策划案的高度一致性。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div>
+                    <div class="step-number text-gray-700">01</div>
+                    <h4 class="text-lg font-bold mb-2">需求对齐</h4>
+                    <p class="text-sm text-gray-400">设定视觉基调，确保符合品牌或音乐情绪。</p>
                 </div>
-                
-                <!-- ！！！ 新增的分类筛选器 ！！！ -->
-                <div class="flex flex-wrap gap-3" id="filters">
-                    <button class="filter-btn active" data-filter="all">全部作品</button>
-                    <!-- 在这里修改或增加你的分类名称 -->
-                    <button class="filter-btn" data-filter="歌曲MV">歌曲MV</button>
-                    <button class="filter-btn" data-filter="电商品牌">电商品牌</button>
-                    <button class="filter-btn" data-filter="影视剧">影视剧</button>
+                <div>
+                    <div class="step-number text-gray-700">02</div>
+                    <h4 class="text-lg font-bold mb-2">产品重建</h4>
+                    <p class="text-sm text-gray-400">精准扣取真实产品，锁定景深与透视。</p>
                 </div>
+                <div>
+                    <div class="step-number text-gray-700">03</div>
+                    <h4 class="text-lg font-bold mb-2">动态生成</h4>
+                    <p class="text-sm text-gray-400">利用前沿模型赋予场景生命力，控制镜头运动。</p>
+                </div>
+                <div>
+                    <div class="step-number text-gray-700">04</div>
+                    <h4 class="text-lg font-bold mb-2">光影合成</h4>
+                    <p class="text-sm text-gray-400">后期调色合成，实现虚拟与真实的无缝光影交织。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部行动号召与页脚 -->
+    <section id="contact" class="bg-gray-50 section-padding px-6 lg:px-8 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold mb-6">准备好升级您的视觉体验了吗？</h2>
+            <p class="text-gray-600 mb-10">
+                现在联系我们，发送您的歌曲 Demo 或一张产品图，我们将为您提供初步评估与建议。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-16">
+                <a href="mailto:your_email@example.com" class="btn-primary rounded">发送邮件咨询</a>
+                <!-- 如果不方便写微信链接，也可以直接展示文本 -->
+                <span class="btn-outline rounded">或添加微信: YourWechatID</span>
             </div>
             
-            <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
-                <p class="text-gray-400 text-sm">正在接入系统数据...</p>
-            </div>
-        </section>
-    </main>
+            <p class="text-xs text-gray-400 font-tech-en">
+                &copy; 2026 AI VISION STUDIO. All rights reserved.
+            </p>
+        </div>
+    </section>
 
-    <!-- 页脚 -->
-    <footer id="contact" class="border-t border-black/5 py-16 text-center text-xs text-gray-400 relative z-10 font-tech-en">
-        <!-- ！！！ 联系方式修改区 ！！！ -->
-        <!-- 把 yourname@example.com 换成你的真实邮箱 -->
-        <a href="mailto:yourname@example.com" class="inline-block border border-black/10 text-gray-900 px-10 py-4 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 font-bold tracking-widest uppercase mb-10">
-            Access Terminal (联系我们)
-        </a>
-        <p class="tracking-widest">&copy; 2026 NINE STUDIO. ALL SYSTEMS SECURE.</p>
-    </footer>
-
-    <!-- CMS 数据读取、渲染与筛选脚本 -->
+    <!-- CMS 数据读取脚本 -->
     <script>
-        let allWorksData = []; // 用来保存从 JSON 读取到的所有数据
+        let allWorksData = [];
 
         async function loadWorks() {
             try {
-                // 读取 works.json 数据
-                // 注意：为了解决 GitHub Pages 的缓存问题，这里加了一个时间戳强制拉取最新数据
+                // 强制刷新缓存
                 const response = await fetch('works.json?t=' + new Date().getTime());
                 const data = await response.json();
                 allWorksData = data.items; 
-                
-                renderWorks('all'); // 初次加载时显示所有作品
-                setupFilters();     // 初始化筛选按钮的点击事件
-
+                renderWorks();
             } catch (error) {
                 console.log('读取数据失败', error);
-                document.getElementById('works-grid').innerHTML = '<p class="text-gray-400 text-sm">数据加载失败，请检查 works.json 文件格式。</p>';
+                document.getElementById('works-grid').innerHTML = '<p class="text-red-500 text-sm text-center col-span-full">数据加载失败，请检查 works.json 文件是否正确放置。</p>';
             }
         }
 
-        // 渲染卡片的函数
-        function renderWorks(filterType) {
+        function renderWorks() {
             const grid = document.getElementById('works-grid');
-            grid.innerHTML = ''; // 清空之前的卡片
+            grid.innerHTML = ''; 
 
             allWorksData.forEach(item => {
-                // 筛选逻辑：如果当前选的不是"all"，且作品的 category 不包含选中的分类词，则跳过不渲染
-                // （注意：为了容错，这里使用了 .includes() 模糊匹配，忽略大小写）
-                if (filterType !== 'all') {
-                    if (!item.category.toLowerCase().includes(filterType.toLowerCase())) {
-                        return; 
-                    }
-                }
-
                 let mediaContent = '';
-                // 如果有视频链接，就播放视频；否则显示封面图
+                // 优先展示视频，如果没有视频则展示封面
                 if (item.video && item.video.trim() !== "") {
-                    mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"></video>`;
+                    mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>`;
                 } else if (item.cover && item.cover.trim() !== "") {
-                    mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100">`;
+                    mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0">`;
+                } else {
+                    // 如果都没有，给个灰色占位背景
+                    mediaContent = `<div class="absolute inset-0 w-full h-full bg-gray-200 z-0"></div>`;
                 }
 
+                // 使用新的卡片结构，文字悬浮在底部
                 const card = `
-                <div class="work-card group cursor-pointer">
+                <div class="work-card group cursor-pointer rounded-lg overflow-hidden">
                     ${mediaContent}
-                    <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="relative z-10 mt-auto">
-                        <h3 class="card-title text-lg md:text-xl font-bold text-gray-900 transition-colors">${item.title}</h3>
-                        <p class="card-desc font-tech-en text-[0.65rem] text-gray-600 uppercase tracking-widest mt-1">${item.category}</p>
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 z-0"></div>
+                    <div class="work-card-content transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                        <p class="text-xs font-bold text-gray-300 uppercase tracking-widest mb-1">${item.category || 'CASE STUDY'}</p>
+                        <h3 class="text-xl font-bold">${item.title}</h3>
                     </div>
                 </div>
                 `;
                 grid.insertAdjacentHTML('beforeend', card);
             });
             
-            // 如果筛选后没有结果的提示
-            if(grid.innerHTML === '') {
-                 grid.innerHTML = '<p class="text-gray-400 text-sm">该分类下暂无作品。</p>';
+            if(allWorksData.length === 0) {
+                 grid.innerHTML = '<p class="text-gray-500 text-center col-span-full">暂无作品展示。</p>';
             }
-        }
-
-        // 设置筛选按钮点击事件的函数
-        function setupFilters() {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // 移除所有按钮的 active 状态
-                    buttons.forEach(b => b.classList.remove('active'));
-                    // 给当前点击的按钮加上 active 状态
-                    this.classList.add('active');
-                    
-                    // 获取按钮上的 data-filter 属性值，并重新渲染
-                    const filterValue = this.getAttribute('data-filter');
-                    renderWorks(filterValue);
-                });
-            });
         }
 
         loadWorks();
