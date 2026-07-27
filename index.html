@@ -144,8 +144,9 @@
                         mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100">`;
                     }
 
+                    // 注意下方代码中 aspect-square 已经修改为 aspect-video (16:9比例)
                     const card = `
-                    <div class="work-card aspect-square group cursor-pointer">
+                    <div class="work-card aspect-video group cursor-pointer">
                         ${mediaContent}
                         <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/10 to-transparent z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div class="relative z-10 mt-auto">
