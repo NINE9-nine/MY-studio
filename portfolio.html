@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 - NINE STUDIO</title>
+    <!-- 引入带有完整功能的 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-light: #fafafa; 
+            --text-main: #111111;  
+        }
+        body { 
+            background-color: var(--bg-light); 
+            color: var(--text-main); 
+            font-family: 'Noto Sans SC', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-tech-en { 
+            font-family: 'Space Grotesk', sans-serif; 
+            letter-spacing: 0.05em;
+        }
+        
+        .work-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            /* 强制使用 16:9 比例 */
+            aspect-ratio: 16 / 9;
+        }
+        .work-card:hover {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 极简导航栏 -->
+    <nav class="flex justify-between items-center py-6 px-8 max-w-[1400px] mx-auto border-b border-black/5">
+        <div class="flex flex-col">
+            <a href="index.html" class="text-2xl font-black font-tech-en text-gray-900 tracking-wider hover:opacity-70 transition-opacity">
+                NINE<span class="text-gray-400 ml-1">STUDIO</span>
+            </a>
+        </div>
+        <a href="index.html" class="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-widest">返回首页</a>
+    </nav>
+
+    <main class="max-w-[1400px] mx-auto px-8 py-16">
+        <h1 class="text-3xl font-black mb-10 tracking-widest text-center">全部作品库</h1>
+        
+        <!-- 保持 3 列网格 -->
+        <div id="full-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <p class="text-gray-400 text-sm col-span-full text-center py-10">加载中...</p>
+        </div>
+    </main>
+
+    <script>
+        async function loadAllWorks() {
+            try {
+                const response = await fetch('works.json?t=' + new Date().getTime());
+                const data = await response.json();
+                
+                const grid = document.getElementById('full-works-grid');
+                grid.innerHTML = ''; 
+
+                if (!data.items || data.items.length === 0) {
+                     grid.innerHTML = '<p class="text-gray-400 text-sm col-span-full text-center py-10">目前暂无作品数据。</p>';
+                     return;
+                }
+
+                data.items.forEach(item => {
+                    let mediaContent = '';
+                    if (item.video && item.video.trim() !== "") {
+                        mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>`;
+                    } else if (item.cover && item.cover.trim() !== "") {
+                        mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0">`;
+                    }
+
+                    const card = `
+                    <div class="work-card">
+                        ${mediaContent}
+                        <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent z-0"></div>
+                        <div class="relative z-10 mt-auto">
+                            <h3 class="card-title text-lg font-bold text-gray-900">${item.title}</h3>
+                            <p class="card-desc font-tech-en text-[0.65rem] text-gray-600 uppercase tracking-widest mt-1">${item.category || 'CASE STUDY'}</p>
+                        </div>
+                    </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+
+            } catch (error) {
+                console.log('读取数据失败', error);
+                document.getElementById('full-works-grid').innerHTML = '<p class="text-gray-400 text-sm col-span-full text-center py-10">数据加载失败。</p>';
+            }
+        }
+
+        loadAllWorks();
+    </script>
+</body>
+</html>
