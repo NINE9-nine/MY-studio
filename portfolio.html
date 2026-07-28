@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品集 - NINE STUDIO</title>
-    <!-- 引入带有完整功能的 Tailwind CSS -->
+    <title>全部作品集 - NINE STUDIO</title>
     <script src="https://cdn.tailwindcss.com?plugins=aspect-ratio"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -56,15 +55,16 @@
     <main class="max-w-[1400px] mx-auto px-8 py-16">
         <h1 class="text-3xl font-black mb-10 tracking-widest text-center">全部作品库</h1>
         
-        <!-- 保持 3 列网格 -->
+        <!-- 保持 3 列网格，无数量限制展示所有作品 -->
         <div id="full-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            <p class="text-gray-400 text-sm col-span-full text-center py-10">加载中...</p>
+            <p class="text-gray-400 text-sm col-span-full text-center py-10">正在加载数据...</p>
         </div>
     </main>
 
     <script>
         async function loadAllWorks() {
             try {
+                // 读取和首页同一个 JSON 数据库
                 const response = await fetch('works.json?t=' + new Date().getTime());
                 const data = await response.json();
                 
@@ -76,12 +76,16 @@
                      return;
                 }
 
+                // 循环渲染每一个作品
                 data.items.forEach(item => {
                     let mediaContent = '';
                     if (item.video && item.video.trim() !== "") {
+                        // 支持阿里云 OSS 视频播放
                         mediaContent = `<video src="${item.video}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>`;
                     } else if (item.cover && item.cover.trim() !== "") {
                         mediaContent = `<img src="${item.cover}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover z-0">`;
+                    } else {
+                        mediaContent = `<div class="absolute inset-0 w-full h-full bg-gray-200 z-0"></div>`;
                     }
 
                     const card = `
